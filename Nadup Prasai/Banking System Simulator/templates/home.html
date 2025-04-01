@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Banking System</h2>
+
+        <h3>Create Account</h3>
+        <input type="text" id="name" placeholder="Enter name">
+        <input type="number" id="balance" placeholder="Enter starting balance">
+        <button onclick="createAccount()">Create Account</button>
+
+        <h3>Deposit</h3>
+        <input type="number" id="depositAmount" placeholder="Enter amount to deposit">
+        <button onclick="deposit()">Deposit</button>
+
+        <h3>Withdraw</h3>
+        <input type="number" id="withdrawAmount" placeholder="Enter amount to withdraw">
+        <button onclick="withdraw()">Withdraw</button>
+
+        <h3>Check Balance</h3>
+        <button onclick="checkBalance()">Check Balance</button>
+    </div>
+
+    <script>
+        async function createAccount() {
+            let name = document.getElementById("name").value;
+            let balance = document.getElementById("balance").value;
+
+            let response = await fetch('/create_account', {
+                method: 'POST',
+                body: new URLSearchParams({name, balance}),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+
+            let data = await response.json();
+            alert(data.message || data.error);
+        }
+
+        async function deposit() {
+            let amount = document.getElementById("depositAmount").value;
+
+            let response = await fetch('/deposit', {
+                method: 'POST',
+                body: new URLSearchParams({amount}),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+
+            let data = await response.json();
+            alert(data.message || data.error);
+        }
+
+        async function withdraw() {
+            let amount = document.getElementById("withdrawAmount").value;
+
+            let response = await fetch('/withdraw', {
+                method: 'POST',
+                body: new URLSearchParams({amount}),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+
+            let data = await response.json();
+            alert(data.message || data.error);
+        }
+
+        async function checkBalance() {
+            let response = await fetch('/check_balance');
+            let data = await response.json();
+            alert(data.name ? `Account: ${data.name}\nBalance: ${data.balance}` : data.error);
+        }
+    </script>
+</body>
+</html>
